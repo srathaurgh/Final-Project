@@ -1,6 +1,6 @@
 # Shreya R.
--
-- [Github Repo] (https://github.com/srathaurgh/Final-Project)
+- [Live Website](https://srathaurgh.github.io/Final-Project/)
+- [Github Repo](https://github.com/srathaurgh/Final-Project)
 - 
 -
 -
