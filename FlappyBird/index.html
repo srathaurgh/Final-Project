@@ -5,145 +5,165 @@
     <meta charset="UTF-8">
     <title>Flappy Bird</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        #game {
+            width: 400px;
+            height: 500px;
+            border: 1px solid black;
+            margin: auto;
+            overflow: hidden;
+            background-color: #ADD8E6;
+            position: relative;
+        }
+
+        #block {
+            width: 50px;
+            height: 500px;
+            background-color: #2C7DA0;
+            position: relative;
+            left: 400px;
+            animation: block 2s infinite linear;
+        }
+
+        @keyframes block {
+            0% { left: 400px; }
+            100% { left: -50px; }
+        }
+
+        #hole {
+            width: 50px;
+            height: 150px;
+            background-color: #ADD8E6;
+            position: relative;
+            left: 400px;
+            top: -500px;
+            animation: block 2s infinite linear;
+        }
+
+        #character {
+            width: 20px;
+            height: 20px;
+            background-color: #B5651D;
+            position: absolute;
+            top: 100px;
+            border-radius: 50%;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: black;
+        }
+
+    
+        #start-button {
+            position: absolute;
+            top: 220px;
+            left: 50%;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #2C7DA0;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #start-button:hover {
+            background-color: #1b5c75;
+        }
+    </style>
 </head>
 <body>
-  <!--      this div is going to contain all the elements of the game  -->
+  
     <div id="game">
         <div id="block"></div>
         <div id="hole"></div>
         <div id="character"></div>
         <div id="score">Score: 0</div>
+
+      
+        <button id="start-button">Start Game</button>
     </div>
-  
-</body>
-<script src="script.js"></script>
-</html>
 
-<style>
-  *{
-    padding: 0;
-    margin: 0;
-    
-}
-/* getting rid of the preset padding and margins */
-#game{
-    width: 400px;
-    height: 500px;
-    border: 1px solid black;
-    margin: auto;
-    overflow: hidden;
-    background-color: #ADD8E6;
-}
-#block{
-    width: 50px;
-    height: 500px;
-    background-color: #2C7DA0;
-    position: relative;
-    left: 400px;
-    animation: block 2s infinite linear;
+    <script>
+        var block = document.getElementById("block");
+        var hole = document.getElementById("hole");
+        var character = document.getElementById("character");
+        var scoreDisplay = document.getElementById("score");
+        var jumping = 0;
+        var counter = 0;
+        var gameRunning = false;
+        var gameInterval;
 
-}
-/* here is where we are styling the pillar for our game */
-/*  the animation tab tells us that even when the block reaches the end of the screen, it will still keep playing and going on infinitely*/
-@keyframes block{
-    0%{left:400px}
-    100%{left:-50px}
-}
-/*  at the beginning of the game, the block is going to be at the left of the screen and at the end, it will be at the right*/
-#hole{
-    width: 50px;
-    height: 150px;
-    background-color: #ADD8E6;
-    position: relative;
-    left: 400px;
-    top: -500px;
-    animation: block 2s infinite linear;
-}
-/* This is the styling of our red cicle that will be moving, it is the subject of our game  */
-#character{
-    width: 20px;
-    height: 20px;
-    background-color: #B5651D;
-    position: absolute;
-    top: 100px;
-    border-radius: 50%;
-}
+        document.getElementById("start-button").addEventListener("click", startGame);
 
-#score {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 20px;
-    font-weight: bold;
-    color: black;
-}
-</style>
-<script>
-  var block = document.getElementById("block");
-var hole = document.getElementById("hole");
-var character = document.getElementById("character");
-var jumping = 0;
-var counter = 0;
-var gameRunning = false; // Track the game state
+        function startGame() {
+            if (gameRunning) return;
 
-// Add the event listener for the Start Button
-document.getElementById("start-button").addEventListener("click", startGame);
-
-function startGame() {
-    if (gameRunning) return; // Prevent starting the game again if already running
-
-    gameRunning = true; // Set the game state to running
-    counter = 0; // Reset score
-    character.style.top = "100px"; // Reset character position
-    document.getElementById("start-button").style.display = "none"; // Hide the start button when game starts
-
-    // Start the game loop
-    setInterval(function() {
-        var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
-        if (jumping == 0) {
-            character.style.top = (characterTop + 3) + "px";
-        }
-        var blockLeft = parseInt(window.getComputedStyle(block).getPropertyValue("left"));
-        var holeTop = parseInt(window.getComputedStyle(hole).getPropertyValue("top"));
-        var cTop = -(500 - characterTop);
-
-        if ((characterTop > 480) || ((blockLeft < 20) && (blockLeft > -50) && ((cTop < holeTop) || (cTop > holeTop + 130)))) {
-            // Game over conditions
-            alert("Game over. Score: " + (counter - 1));
-            gameRunning = false; // Stop the game
-            document.getElementById("start-button").style.display = "block"; // Show the start button again
+            gameRunning = true;
             counter = 0;
-        }
-    }, 10);
+            scoreDisplay.innerText = "Score: 0";
+            character.style.top = "100px";
+            document.getElementById("start-button").style.display = "none";
 
-    // Update score and hole position every time the hole animation ends
-    hole.addEventListener('animationiteration', () => {
-        if (gameRunning) {
-            var random = -((Math.random() * 300) + 150);
-            hole.style.top = random + "px";
-            counter++;
-            document.getElementById("score").innerText = "Score: " + counter;
-        }
-    });
-}
+            if (gameInterval) clearInterval(gameInterval);
 
-function jump() {
-    if (!gameRunning) return; // Don't allow jumping if the game isn't running
+            gameInterval = setInterval(function () {
+                var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+                if (jumping === 0) {
+                    character.style.top = (characterTop + 3) + "px";
+                }
 
-    jumping = 1;
-    let jumpCount = 0;
-    var jumpInterval = setInterval(function() {
-        var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
-        if ((characterTop > 6) && (jumpCount < 15)) {
-            character.style.top = (characterTop - 5) + "px";
-        }
-        if (jumpCount > 20) {
-            clearInterval(jumpInterval);
-            jumping = 0;
-            jumpCount = 0;
-        }
-        jumpCount++;
-    }, 10);
-}
+                var blockLeft = parseInt(window.getComputedStyle(block).getPropertyValue("left"));
+                var holeTop = parseInt(window.getComputedStyle(hole).getPropertyValue("top"));
+                var cTop = -(500 - characterTop);
 
-</script>
+                if ((characterTop > 480) || ((blockLeft < 20) && (blockLeft > -50) && ((cTop < holeTop) || (cTop > holeTop + 130)))) {
+                    alert("Game over. Score: " + (counter - 1));
+                    clearInterval(gameInterval);
+                    gameRunning = false;
+                    document.getElementById("start-button").style.display = "block";
+                    counter = 0;
+                }
+            }, 10);
+
+            hole.addEventListener('animationiteration', () => {
+                if (gameRunning) {
+                    var random = -((Math.random() * 300) + 150);
+                    hole.style.top = random + "px";
+                    counter++;
+                    scoreDisplay.innerText = "Score: " + counter;
+                }
+            });
+        }
+
+        function jump() {
+            if (!gameRunning) return;
+
+            jumping = 1;
+            let jumpCount = 0;
+            var jumpInterval = setInterval(function () {
+                var characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+                if ((characterTop > 6) && (jumpCount < 15)) {
+                    character.style.top = (characterTop - 5) + "px";
+                }
+                if (jumpCount > 20) {
+                    clearInterval(jumpInterval);
+                    jumping = 0;
+                    jumpCount = 0;
+                }
+                jumpCount++;
+            }, 10);
+        }
+    </script>
+</body>
+</html>
