@@ -117,10 +117,7 @@ hr{
             </div>
 
           
-                <div class="passwords-container">
-                    <span class="passwords" id="password3"></span>
-                    <span class="passwords" id="password4"></span>
-                </div>
+        
                
             </div>
         </div>
@@ -129,8 +126,7 @@ hr{
       
      const password1El = document.getElementById("password1");
      const password2El = document.getElementById("password2"); 
-     const password3El = document.getElementById("password3");
-     const password4El = document.getElementById("password4");
+    
       
       const button1 = document.getElementById("btn1");
       
@@ -158,20 +154,7 @@ hr{
      }
      password2.textContent = pw2;
       
-     let pw3 = "";
-  for(let i = 0; i < 14; i++){
-     let randomNumber = Math.floor(Math.random()*characters.length);  
-     pw3 += characters[randomNumber];
-     }
-     password3.textContent = pw3;
-     
-     let pw4 = "";
-  for(let i = 0; i < 14; i++){
-     let randomNumber = Math.floor(Math.random()*characters.length);  
-     pw4 += characters[randomNumber];
-     }
-     password4.textContent = pw4;
- }
+    
             </script>
     </body>
 </html>
